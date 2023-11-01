@@ -12,7 +12,7 @@ async function getAndShowStoriesOnStart() {
   putStoriesOnPage();
 }
 
-// Add new story after story form is submit
+// !!! Add new story after story form is submit
 function submitStoryForm(evt){
     evt.preventDefault();
   
@@ -24,7 +24,7 @@ function submitStoryForm(evt){
     $storyForm.trigger("reset");
     $storyForm.hide();
 
-  
+  // !!! Call the addStory method with the values from the form
     storyList.addStory(currentUser, {title, author, url});
     // getAndShowStoriesOnStart();
     start();
@@ -33,13 +33,15 @@ function submitStoryForm(evt){
   
 $storyForm.on("submit", submitStoryForm);
 
-//favorite story
+// !!! Favorite story
 function favoriteStory(evt) {
   evt.preventDefault();
+  // Call storeFavorites User method by story ID - if already a favorite - remove it
   currentUser.storeFavorites(evt.target.parentElement.parentElement.id)
 }
 $allStoriesList.on("click", ".favorite", favoriteStory);
 
+// !!! Delete Story when user clicks on the trash can icon
 function deleteStory(evt) {
   evt.preventDefault();
   currentUser.removeStory(evt.target.parentElement.parentElement.id)
@@ -52,7 +54,7 @@ $allStoriesList.on("click", ".delete", deleteStory);
  *
  * Returns the markup for the story.
  */
-
+// !!! Changed to refelect the star and trash icons depending on if the story is in the user's favorites or own stories
 function generateStoryMarkup(story) {
   let deleteIcon = '';
   let favoriteIcon = '';
@@ -101,6 +103,7 @@ function putStoriesOnPage() {
   $allStoriesList.show();
 }
 
+// !!! Instead of adding separate divs - created two functions to filter stories depending on the menu clicked
 function putOwnStoriesOnPage() {
   $allStoriesList.empty();
   for(let story of currentUser.ownStories){

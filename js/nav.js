@@ -24,7 +24,7 @@ function navLoginClick(evt) {
 }
 $navLogin.on("click", navLoginClick);
 
-//Show submit new story form
+// !!! Show submit new story form
 function submitClick(evt) {
   hidePageComponents();
   $loginForm.hide();
@@ -33,13 +33,13 @@ function submitClick(evt) {
 }
 $navSubmit.on("click", submitClick);
 
-//Show favorite stories only
+// !!! Show favorite stories only
 function favoritesClick(evt) {
   putFavoritesOnPage();
 }
 $navFavorites.on("click", favoritesClick);
 
-//Show user stories only
+// !!! Show user stories only
 function myStoriesClick(evt) {
   putOwnStoriesOnPage();
 }

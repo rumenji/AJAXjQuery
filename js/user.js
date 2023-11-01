@@ -111,7 +111,7 @@ function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
   hidePageComponents();
   $allStoriesList.show();
-  //show the user menu at the top
+  //!!! show the user menu at the top
   $userMenu.show();
   putStoriesOnPage();
   updateNavOnLogin();

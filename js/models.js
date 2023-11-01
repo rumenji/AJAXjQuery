@@ -24,6 +24,7 @@ class Story {
   /** Parses hostname out of URL and returns it. */
 
   getHostName() {
+    // !!! Implement a new URL built in function to parse hostname from URL
     return new URL(this.url).host;
   }
 }
@@ -71,12 +72,14 @@ class StoryList {
    *
    * Returns the new Story instance
    */
-
+// !!! New story function - POST request to save the story and return the object to create a new Story object
   async addStory(user, newStory) {
     // UNIMPLEMENTED: complete this function!
     const addNewStory = await axios.post('https://hack-or-snooze-v3.herokuapp.com/stories', {'token': user.loginToken, 'story': newStory})
+    start();
     return new Story(addNewStory)
   }
+  
 }
 
 
@@ -165,10 +168,11 @@ class User {
     );
   }
 
-  //Add favroites to a user
+  // !!! Add favroites for a user
   async storeFavorites(storyID){
+    // !!! If not already in favorites - add it to the DOM and DB, else delete it
     if(!this.favorites.find(s => s.storyId === storyID)){
-      this.favorites.push(selectedStory);
+      // this.favorites.push(selectedStory);
       await axios.post(`${BASE_URL}/users/${this.username}/favorites/${storyID}`, {'token': this.loginToken})
     } 
     else {
@@ -179,11 +183,12 @@ class User {
       })
       this.favorites = this.favorites.filter(s => s.storyId !== storyID);
     }
-    putFavoritesOnPage();
+    start();
   }
 
-  //Delete story
+  // !!! Delete story
   async removeStory(storyID){
+    // !!! Filter the story from the user ownStories and Favorites and send the delete request
     this.ownStories = this.ownStories.filter(s => s.storyId !== storyID);
     this.favorites = this.favorites.filter(s => s.storyId !== storyID);
     await axios({
@@ -191,6 +196,7 @@ class User {
       method: "DELETE",
       params: {'token': this.loginToken}
     })
+    start();
   }
   /** When we already have credentials (token & username) for a user,
    *   we can log them in automatically. This function does that.
