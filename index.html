@@ -39,7 +39,7 @@
   </div>
 
   <!-- !!! Add a new div for user options in the top navigation bar -->
-  <div class="nav-left" id="user-menu">
+  <div class="nav-left" id="user-menu" hidden>
     |
     <a class="nav-link" href="#" id="submit-story">submit</a>
     |
@@ -58,35 +58,42 @@
 <!-- area for stories (all stories, user stories, favorites) -->
 <section class="stories-container container">
 
+  <!-- !!! New story form -->
+  <form action="#" id="story-form" class="account-form hidden" method="post">
+    <h4>Add new story</h4>
+    <div class="story-input">
+      <label for="title">Title</label>
+      <input id="title">
+    </div>
+    <div class="story-input">
+      <label for="author">Author</label>
+      <input id="author">
+    </div>
+    <div class="story-input">
+      <label for="url">URL</label>
+      <input id="url">
+    </div>
+    <button type="submit">Add story</button>
+    <hr>
+  </form>
+
   <!-- loading message (removed by JS after stories loaded) -->
   <div id="stories-loading-msg">Loading&hellip;</div>
 
   <!-- List of all stories -->
   <ol id="all-stories-list" class="stories-list"></ol>
 
+  <!-- List of favorited stories -->
+  <ol id="favorited-stories-list" class="stories-list"></ol>
+
+  <!-- List of own stories -->
+  <ol id="own-stories-list" class="stories-list"></ol>
+
 </section>
 
 <!-- Login and signup forms -->
 <section class="account-forms-container container">
 
-  <!-- !!! New story form -->
-<form action="#" id="story-form" class="account-form hidden" method="post">
-  <h4>Add new story</h4>
-  <div class="story-input">
-    <label for="title">Title</label>
-    <input id="title">
-  </div>
-  <div class="story-input">
-    <label for="author">Author</label>
-    <input id="author">
-  </div>
-  <div class="story-input">
-    <label for="url">URL</label>
-    <input id="url">
-  </div>
-  <button type="submit">Add story</button>
-  <hr>
-</form>
 
   <!-- Login form -->
   <form action="#" id="login-form" class="account-form hidden" method="post">

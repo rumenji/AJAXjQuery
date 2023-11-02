@@ -75,9 +75,29 @@ class StoryList {
 // !!! New story function - POST request to save the story and return the object to create a new Story object
   async addStory(user, newStory) {
     // UNIMPLEMENTED: complete this function!
-    const addNewStory = await axios.post('https://hack-or-snooze-v3.herokuapp.com/stories', {'token': user.loginToken, 'story': newStory})
-    start();
-    return new Story(addNewStory)
+    const addNewStory = await axios({
+      method: "POST",
+      url: `${BASE_URL}/stories`,
+      data: {'token': user.loginToken, 'story': newStory}
+    });
+    const story = new Story(addNewStory.data.story);
+    this.stories.unshift(story);
+    user.ownStories.unshift(story);
+    return story
+  }
+
+  // !!! Delete story
+  async removeStory(user, storyID){
+    // !!! Filter the story from the user ownStories and Favorites and send the delete request
+    user.ownStories = user.ownStories.filter(s => s.storyId !== storyID);
+    user.favorites = user.favorites.filter(s => s.storyId !== storyID);
+    this.stories = this.stories.filter(story => story.storyId !== storyID);
+
+    await axios({
+      url: `${BASE_URL}/stories/${storyID}`,
+      method: "DELETE",
+      params: {'token': user.loginToken}
+    })
   }
   
 }
@@ -169,35 +189,23 @@ class User {
   }
 
   // !!! Add favroites for a user
-  async storeFavorites(storyID){
+  async storeFavorites(story){
     // !!! If not already in favorites - add it to the DOM and DB, else delete it
-    if(!this.favorites.find(s => s.storyId === storyID)){
-      // this.favorites.push(selectedStory);
-      await axios.post(`${BASE_URL}/users/${this.username}/favorites/${storyID}`, {'token': this.loginToken})
+    if(!this.favorites.find(s => s.storyId === story.storyId)){
+      this.favorites.push(story);
+      await axios.post(`${BASE_URL}/users/${this.username}/favorites/${story.storyId}`, {'token': this.loginToken})
     } 
     else {
       await axios({
-        url: `${BASE_URL}/users/${this.username}/favorites/${storyID}`,
+        url: `${BASE_URL}/users/${this.username}/favorites/${story.storyId}`,
         method: "DELETE",
         params: {'token': this.loginToken}
       })
-      this.favorites = this.favorites.filter(s => s.storyId !== storyID);
+      this.favorites = this.favorites.filter(s => s.storyId !== story.storyId);
     }
-    start();
   }
 
-  // !!! Delete story
-  async removeStory(storyID){
-    // !!! Filter the story from the user ownStories and Favorites and send the delete request
-    this.ownStories = this.ownStories.filter(s => s.storyId !== storyID);
-    this.favorites = this.favorites.filter(s => s.storyId !== storyID);
-    await axios({
-      url: `${BASE_URL}/stories/${storyID}`,
-      method: "DELETE",
-      params: {'token': this.loginToken}
-    })
-    start();
-  }
+
   /** When we already have credentials (token & username) for a user,
    *   we can log them in automatically. This function does that.
    */

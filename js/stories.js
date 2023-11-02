@@ -12,42 +12,6 @@ async function getAndShowStoriesOnStart() {
   putStoriesOnPage();
 }
 
-// !!! Add new story after story form is submit
-function submitStoryForm(evt){
-    evt.preventDefault();
-  
-    // grab the form values
-    const title = $("#title").val();
-    const author = $("#author").val();
-    const url = $("#url").val();
-  
-    $storyForm.trigger("reset");
-    $storyForm.hide();
-
-  // !!! Call the addStory method with the values from the form
-    storyList.addStory(currentUser, {title, author, url});
-    // getAndShowStoriesOnStart();
-    start();
-
-  }
-  
-$storyForm.on("submit", submitStoryForm);
-
-// !!! Favorite story
-function favoriteStory(evt) {
-  evt.preventDefault();
-  // Call storeFavorites User method by story ID - if already a favorite - remove it
-  currentUser.storeFavorites(evt.target.parentElement.parentElement.id)
-}
-$allStoriesList.on("click", ".favorite", favoriteStory);
-
-// !!! Delete Story when user clicks on the trash can icon
-function deleteStory(evt) {
-  evt.preventDefault();
-  currentUser.removeStory(evt.target.parentElement.parentElement.id)
-}
-
-$allStoriesList.on("click", ".delete", deleteStory);
 /**
  * A render method to render HTML for an individual Story instance
  * - story: an instance of Story
@@ -58,14 +22,12 @@ $allStoriesList.on("click", ".delete", deleteStory);
 function generateStoryMarkup(story) {
   let deleteIcon = '';
   let favoriteIcon = '';
-  const hostName = story.getHostName();
+  const hostName = '';
   if (currentUser){
     if(currentUser.ownStories.find(s => s.storyId === story.storyId)){
-      console.log(story)
       deleteIcon = '<span class="delete"><i class="fas fa-trash-alt"></i></span>';
     } 
     if (currentUser.favorites.find(s => s.storyId === story.storyId)){
-      console.log(story)
       favoriteIcon = '<span class="favorite"><i class="fas fa-star"></i></span>'
     } else if (!currentUser.favorites.find(s => s.storyId === story.storyId)){
       favoriteIcon = '<span class="favorite"><i class="far fa-star"></i></span>'
@@ -103,19 +65,68 @@ function putStoriesOnPage() {
   $allStoriesList.show();
 }
 
+// !!! Add new story after story form is submit
+async function submitStoryForm(evt){
+  evt.preventDefault();
+
+  // grab the form values
+  const title = $("#title").val();
+  const author = $("#author").val();
+  const url = $("#url").val();
+
+  $storyForm.trigger("reset");
+  $storyForm.hide();
+
+// !!! Call the addStory method with the values from the form
+  const story = await storyList.addStory(currentUser, {title, author, url});
+  const $story = generateStoryMarkup(story);
+  $allStoriesList.prepend($story)
+  $ownStoriesList.prepend($story)
+
+}
+
+$storyForm.on("submit", submitStoryForm);
+
+// !!! Favorite story
+async function favoriteStory(evt) {
+  evt.preventDefault();
+  const $targetElement = $(evt.target);
+  const story = storyList.stories.find(s => s.storyId === evt.target.parentElement.parentElement.id);
+  // Call storeFavorites User method by story - if already a favorite - remove it
+  const favoriteState = await currentUser.storeFavorites(story)
+  $targetElement.toggleClass('fas far');
+}
+$storiesLists.on("click", ".favorite", favoriteStory);
+
+// !!! Delete Story when user clicks on the trash can icon
+async function deleteStory(evt) {
+  evt.preventDefault();
+  await storyList.removeStory(currentUser, evt.target.parentElement.parentElement.id)
+  await putOwnStoriesOnPage();
+}
+
+$storiesLists.on("click", ".delete", deleteStory);
+
 // !!! Instead of adding separate divs - created two functions to filter stories depending on the menu clicked
 function putOwnStoriesOnPage() {
-  $allStoriesList.empty();
+  $ownStoriesList.empty();
   for(let story of currentUser.ownStories){
     const $story = generateStoryMarkup(story);
-    $allStoriesList.append($story);
-  } 
+    $ownStoriesList.append($story);
+  }
+  $ownStoriesList.show();
 }
 
 function putFavoritesOnPage() {
-  $allStoriesList.empty();
+  console.debug("putFavoritesOnPage");
+  $favoritedStoriesList.empty();
   for(let story of currentUser.favorites){
     const $story = generateStoryMarkup(story);
-    $allStoriesList.append($story);
-  } 
+    $favoritedStoriesList.append($story);
+  }
+  $favoritedStoriesList.show();
+}
+
+async function setFavorited(evt){
+  
 }

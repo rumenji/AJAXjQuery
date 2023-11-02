@@ -27,20 +27,21 @@ $navLogin.on("click", navLoginClick);
 // !!! Show submit new story form
 function submitClick(evt) {
   hidePageComponents();
-  $loginForm.hide();
-  $signupForm.hide();
   $storyForm.show();
+  $allStoriesList.show();
 }
 $navSubmit.on("click", submitClick);
 
 // !!! Show favorite stories only
 function favoritesClick(evt) {
+  hidePageComponents();
   putFavoritesOnPage();
 }
 $navFavorites.on("click", favoritesClick);
 
 // !!! Show user stories only
 function myStoriesClick(evt) {
+  hidePageComponents();
   putOwnStoriesOnPage();
 }
 $navMyStories.on("click", myStoriesClick);
@@ -52,6 +53,7 @@ function updateNavOnLogin() {
   $(".main-nav-links").show();
   $navLogin.hide();
   $navLogOut.show();
+  $userMenu.show();
   $navUserProfile.text(`${currentUser.username}`).show();
 }
 
